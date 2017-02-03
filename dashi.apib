@@ -8,9 +8,13 @@ inmuebles de una empresa gestionados por una agencia inmobiliaria.
 # Group Inmuebles
 
 Los inmuebles son propiedades inmobiliarias gestionadas, ya sea para su venta o
-su alquiler.
+su alquiler. Estos datos los proporciona la empresa mayorista a quien pertenecen
+los inmuebles. La colección de inmuebles es un conjunto finito de elementos al
+que se podrán añadir nuevos inmuebles. También se podrán hacer modificaciones a
+los inmuebles existentes, de forma que siempre habrá una única entradada por
+cada inmueble.
 
-## Inmuebles collection [/inmuebles]
+## Inmuebles collection [/inmuebles/{from}]
 
 ### Obtener todos los inmuebles [GET]
 
@@ -23,6 +27,14 @@ Esta llamada permite obtener todos los inmuebles gestionados en la actualidad.
 
 > La siguiente respuesta es un mock. La más completa que tenemos hasta la fecha
 > el es ejempo del feed de altamira.
+
+Esta llamada permite obtener también todos los inmuebles que se hayan creado, o
+tengan modificaciones, con posterioridad a una fecha pasada como parámetro.
+
++ Parameters
+
+    + from (date, optional) - La fecha desde la cual se quieran recibir los
+    leads ocurridos.
 
 + Response 200 (application/json)
 
@@ -41,8 +53,10 @@ Esta llamada permite obtener todos los inmuebles gestionados en la actualidad.
             "habitaciones": "0",
             "m2construidos": "25",
             "m2utiles": "20",
-            "nivel_eficiencia": "Z" 
+            "nivel_eficiencia": "Z"
         }]
+
+
 
 # Group Leads
 
@@ -51,6 +65,11 @@ A.K.A Cupones, Oportunidades.
 Los leads son oportunidades que aparecen para cada una de los inmuebles. Estas
 oportunidades pueden ser de varios tipos: solicitud de visitas, solicitud de
 información, etc.
+
+- Venta
+- Alquiler
+- Solicitud información por email (cupón)
+- Solicitud información telefónica
 
 ## Leads collection [/leads/{from}]
 
@@ -63,9 +82,21 @@ información, etc.
 
 + Response 200 (application/json)
 
-        [{
-            "ref_interna": "999999",
-            "ref_altamira": "ALT999",
-            "direccion": "C/Del Oso 5 3ºC, 28806 Alcalá de Henares, Madrid",
-            "superficie_m2": "130"
-        }]
+    + Attributes (array[EventVenta,EventAlquiler])
+
+## Data Structures
+
+### EventVenta
++ timestamp: `2014-11-11T08:40:51.620Z` (required)
++ referencia_interna: 'XXXXXXX',
++ referencia_externa: 'YYYYYYY',
++ type: venta (required)
++ event_data: precio, fecha (array, required)
+
+### EventAlquiler
++ timestamp: `2014-11-11T08:40:51.620Z` (required)
++ referencia_interna: 'XXXXXXX',
++ referencia_externa: 'YYYYYYY',
++ type: venta|alquiler|visita|cupon (required)
++ event_data: precio, fechaFinalizacion (array, required)
+
